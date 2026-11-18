@@ -1,0 +1,27 @@
+# TrustDoc + IA locale (Ollama). Lancer :  docker compose up -d   puis  http://localhost:8080
+# Premier lancement : télécharger le modèle une fois :  docker compose exec ollama ollama pull llama3.2:3b
+services:
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+
+  trustdoc:
+    build: .
+    depends_on:
+      - ollama
+    environment:
+      TRUSTDOC_LLM_MODE: ollama
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: llama3.2:3b
+      TRUSTDOC_JWT_SECRET: remplacez-moi-par-un-secret-long-et-aleatoire-0123456789
+    volumes:
+      - data:/opt/trustdoc/data
+    ports:
+      - "8080:8080"
+
+volumes:
+  ollama:
+  data:
